@@ -1,0 +1,73 @@
+from kivy.app import App
+from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.label import Label
+from kivy.uix.button import Button
+from kivy.uix.popup import Popup
+from datetime import datetime
+
+
+class ReminderApp(App):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.reminders = []
+
+    def build(self):
+        return ReminderAppUI(self)
+
+
+class ReminderAppUI(BoxLayout):
+    def __init__(self, reminder_root, **kwargs):
+        super().__init__(**kwargs)
+        self.reminder_root = reminder_root
+
+        self.orientation = "vertical"
+
+        # UI Elements
+        self.set_reminder_button = Button(text="Set Reminder")
+        self.show_reminders_button = Button(text="Show Reminders")
+
+        # Bind button events
+        self.set_reminder_button.bind(on_release=self.set_reminder)
+        self.show_reminders_button.bind(on_release=self.show_reminders)
+
+        # Add UI elements to the layout
+        self.add_widget(Label(text="Reminder App", font_size=24))
+        self.add_widget(self.set_reminder_button)
+        self.add_widget(self.show_reminders_button)
+
+    def set_reminder(self, instance):
+        time_input = input("Enter time (HH:MM): ")
+        date_input = input("Enter date (YYYY-MM-DD): ")
+
+        try:
+            reminder_datetime = datetime.strptime(f"{date_input} {time_input}", "%Y-%m-%d %H:%M")
+            now = datetime.now()
+
+            if reminder_datetime <= now:
+                # If the chosen datetime is in the past, display an error popup
+                self.show_popup("Error", "Invalid date/time!")
+            else:
+                # Add the reminder to the list
+                self.reminder_root.reminders.append(reminder_datetime)
+                # Sort the reminders based on their datetime
+                self.reminder_root.reminders.sort()
+                self.show_popup("Reminder Set", "Reminder has been set!")
+        except ValueError:
+            self.show_popup("Error", "Invalid date/time format!")
+
+    def show_reminders(self, instance):
+        reminders = self.reminder_root.reminders
+
+        if not reminders:
+            print("No reminders set yet!")
+        else:
+            print("Reminders:")
+            for reminder in reminders:
+                print(reminder.strftime("%Y-%m-%d %H:%M"))
+
+    def show_popup(self, title, message):
+        print(f"{title}: {message}")
+
+
+if __name__ == "__main__":
+    ReminderApp().run()
