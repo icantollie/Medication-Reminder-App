@@ -5,7 +5,6 @@ from kivy.uix.button import Button
 from kivy.uix.popup import Popup
 from datetime import datetime
 
-
 class ReminderApp(App):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -13,7 +12,6 @@ class ReminderApp(App):
 
     def build(self):
         return ReminderAppUI(self)
-
 
 class ReminderAppUI(BoxLayout):
     def __init__(self, reminder_root, **kwargs):
@@ -67,7 +65,6 @@ class ReminderAppUI(BoxLayout):
 
     def show_popup(self, title, message):
         print(f"{title}: {message}")
-
 
 if __name__ == "__main__":
     ReminderApp().run()
